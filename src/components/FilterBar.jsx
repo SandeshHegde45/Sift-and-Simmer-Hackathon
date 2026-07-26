@@ -22,31 +22,31 @@ function FilterBar() {
         />
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex min-w-0 max-w-full gap-2 overflow-x-auto pb-1">
+      <div className="flex min-w-0 max-w-full gap-2 overflow-x-auto pb-1">
+        <button
+          onClick={() => dispatch(setCategory("All"))}
+          className={`shrink-0 rounded-full border px-4 py-1.5 font-body text-xs font-medium transition-colors ${filters.category === "All"
+              ? "border-forest bg-forest text-cream"
+              : "border-line bg-paper text-ink-soft hover:border-forest hover:text-forest"
+            }`}
+        >
+          All
+        </button>
+        {categoryCounts.map(({ category, count }) => (
           <button
-            onClick={() => dispatch(setCategory("All"))}
-            className={`shrink-0 rounded-full border px-4 py-1.5 font-body text-xs font-medium transition-colors ${filters.category === "All"
+            key={category}
+            onClick={() => dispatch(setCategory(category))}
+            className={`shrink-0 rounded-full border px-4 py-1.5 font-body text-xs font-medium transition-colors ${filters.category === category
                 ? "border-forest bg-forest text-cream"
                 : "border-line bg-paper text-ink-soft hover:border-forest hover:text-forest"
               }`}
           >
-            All
+            {category} ({count})
           </button>
-          {categoryCounts.map(({ category, count }) => (
-            <button
-              key={category}
-              onClick={() => dispatch(setCategory(category))}
-              className={`shrink-0 rounded-full border px-4 py-1.5 font-body text-xs font-medium transition-colors ${filters.category === category
-                  ? "border-forest bg-forest text-cream"
-                  : "border-line bg-paper text-ink-soft hover:border-forest hover:text-forest"
-                }`}
-            >
-              {category} ({count})
-            </button>
-          ))}
-        </div>
+        ))}
+      </div>
 
+      <div className="flex flex-wrap items-center gap-3">
         <select
           value={filters.sort}
           onChange={(event) => dispatch(setSort(event.target.value))}
