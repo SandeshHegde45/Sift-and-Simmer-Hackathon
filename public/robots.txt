@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sift-and-simmer.example.com/sitemap.xml
