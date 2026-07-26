@@ -3,7 +3,7 @@ import { NavLink } from "react-router";
 import { useSelector } from "react-redux";
 
 const navLinks = [
-  { to: "/", label: "Browse", end: true },
+  { to: "/", label: "Home", end: true },
   { to: "/categories", label: "Categories" },
   { to: "/favorites", label: "Favorites" },
   { to: "/about", label: "About" },

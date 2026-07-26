@@ -11,26 +11,25 @@ function FilterBar() {
     filters.search !== "" || filters.category !== "All" || filters.sort !== "az";
 
   return (
-    <div className="space-y-4">
+    <div className="min-w-0 space-y-4">
       <div className="relative">
         <input
           type="text"
           value={filters.search}
           onChange={(event) => dispatch(setSearch(event.target.value))}
-          placeholder="Search a dish, e.g. aloo paratha, Dal fry..."
+          placeholder="Search a dish, e.g. paneer tikka..."
           className="w-full rounded-full border border-line bg-paper px-5 py-3 font-body text-sm text-ink placeholder:text-ink-soft focus:border-forest focus:outline-none focus:ring-2 focus:ring-forest/20"
         />
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex max-w-full gap-2 overflow-x-auto pb-1">
+        <div className="flex min-w-0 max-w-full gap-2 overflow-x-auto pb-1">
           <button
             onClick={() => dispatch(setCategory("All"))}
-            className={`shrink-0 rounded-full border px-4 py-1.5 font-body text-xs font-medium transition-colors ${
-              filters.category === "All"
+            className={`shrink-0 rounded-full border px-4 py-1.5 font-body text-xs font-medium transition-colors ${filters.category === "All"
                 ? "border-forest bg-forest text-cream"
                 : "border-line bg-paper text-ink-soft hover:border-forest hover:text-forest"
-            }`}
+              }`}
           >
             All
           </button>
@@ -38,11 +37,10 @@ function FilterBar() {
             <button
               key={category}
               onClick={() => dispatch(setCategory(category))}
-              className={`shrink-0 rounded-full border px-4 py-1.5 font-body text-xs font-medium transition-colors ${
-                filters.category === category
+              className={`shrink-0 rounded-full border px-4 py-1.5 font-body text-xs font-medium transition-colors ${filters.category === category
                   ? "border-forest bg-forest text-cream"
                   : "border-line bg-paper text-ink-soft hover:border-forest hover:text-forest"
-              }`}
+                }`}
             >
               {category} ({count})
             </button>
