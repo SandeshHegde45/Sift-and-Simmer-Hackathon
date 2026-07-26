@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import { Link } from "react-router";
 import { useGetRandomMealQuery } from "../store/randomMealApi";
 import RecipeImage from "./RecipeImage";
 
@@ -41,7 +42,10 @@ function RandomDishWidget() {
       )}
 
       {meal && (
-        <div className="mt-4 flex items-center gap-4">
+        <Link
+          to={`/recipe/${meal.idMeal}`}
+          className="-mx-2 mt-4 flex items-center gap-4 rounded-xl p-2 transition-colors hover:bg-cream"
+        >
           <RecipeImage
             src={meal.strMealThumb}
             name={meal.strMeal}
@@ -56,7 +60,7 @@ function RandomDishWidget() {
               {[meal.strCategory, meal.strArea].filter(Boolean).join(" · ")}
             </p>
           </div>
-        </div>
+        </Link>
       )}
     </div>
   );
