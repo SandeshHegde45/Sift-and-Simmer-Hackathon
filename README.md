@@ -11,21 +11,31 @@ React + Redux Toolkit + React Router + Tailwind CSS + Supabase.
   from the main thunk-based data flow — queries Supabase directly via a
   custom `queryFn`
 - **React Router** — client-side routing
-- **Supabase** — recipe database, queries, and email/password authentication
+- **Supabase** — recipe database and queries
+- **localStorage auth** — simple client-side login/register (`src/api/localAuth.js`), see Authentication below
 - **React Hook Form** — the Contact, Login, and Register forms
 - **Tailwind CSS v4** — styling
 
 ## Authentication
 
-The whole app requires a signed-in Supabase user (email + password) —
-`RequireAuth.jsx` redirects to `/login` if no session is found. `/login` and
-`/register` are the only public routes. Session state is bootstrapped and
-kept in sync via `src/utils/useAuthListener.js`, which checks for an existing
-session on load and subscribes to `supabase.auth.onAuthStateChange`.
+The whole app requires being signed in — `RequireAuth.jsx` redirects to
+`/login` if no session is found. `/login` and `/register` are the only
+public routes.
+
+Auth is a simple **localStorage-based system** (`src/api/localAuth.js`), not
+Supabase Auth. Registering hashes the password (SHA-256, via the Web Crypto
+API) and stores `{ email, passwordHash }` in `localStorage` under
+`siftSimmerUsers`; signing in re-hashes the entered password and compares.
+A signed-in session is just `{ email }` stored under `siftSimmerSession`.
+
+**This is not secure and isn't meant to be** — there's no server verifying
+anything, and anyone with dev tools open can read the stored data. It exists
+purely so the app has a working, dependency-free login flow for a learning
+project, without relying on Supabase Auth's email confirmation step (which
+requires reliable outbound email delivery to work at all).
 
 Note: favorites and contact messages are still stored per-browser in
-`localStorage`, not tied to the signed-in account — that would need its own
-Supabase table with row-level security if you want per-user data.
+`localStorage`, unrelated to the auth system above.
 
 ## Data
 

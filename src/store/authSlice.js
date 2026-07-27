@@ -1,25 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  signUpWithEmail,
-  signInWithEmail,
-  signOutUser,
-} from "../api/supabaseAuth";
+import { registerUser, loginUser, logoutUser } from "../api/localAuth";
 
 export const signUp = createAsyncThunk(
   "auth/signUp",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const data = await signUpWithEmail(email, password);
-
-      // If email confirmation is off in the Supabase project, signUp
-      // logs the user in immediately. We sign back out right away so the
-      // flow is always: create account -> sign in manually with the same
-      // credentials, rather than being silently auto-logged-in.
-      if (data.session) {
-        await signOutUser();
-      }
-
-      return { user: data.user };
+      await registerUser(email, password);
+      return {};
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -30,8 +17,8 @@ export const signIn = createAsyncThunk(
   "auth/signIn",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const data = await signInWithEmail(email, password);
-      return { user: data.user, session: data.session };
+      const session = await loginUser(email, password);
+      return { user: session };
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -39,7 +26,7 @@ export const signIn = createAsyncThunk(
 );
 
 export const signOut = createAsyncThunk("auth/signOut", async () => {
-  await signOutUser();
+  logoutUser();
 });
 
 const authSlice = createSlice({
@@ -55,8 +42,8 @@ const authSlice = createSlice({
   reducers: {
     setSession(state, action) {
       const session = action.payload;
-      state.user = session?.user ?? null;
-      state.status = session?.user ? "authenticated" : "unauthenticated";
+      state.user = session ?? null;
+      state.status = session ? "authenticated" : "unauthenticated";
     },
     clearAuthError(state) {
       state.error = null;

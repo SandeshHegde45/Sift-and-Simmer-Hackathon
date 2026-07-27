@@ -1,22 +1,25 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getCurrentSession, subscribeToAuthChanges } from "../api/supabaseAuth";
+import { getStoredSession, SESSION_STORAGE_KEY } from "../api/localAuth";
 import { setSession } from "../store/authSlice";
 
 export function useAuthListener() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getCurrentSession()
-      .then((session) => dispatch(setSession(session)))
-      .catch(() => dispatch(setSession(null)));
+    dispatch(setSession(getStoredSession()));
 
-    const subscription = subscribeToAuthChanges((session) => {
-      dispatch(setSession(session));
-    });
+    // Keeps multiple tabs in sync — signing out in one tab signs you out
+    // in others too, since they all share the same localStorage session.
+    function handleStorageChange(event) {
+      if (event.key === SESSION_STORAGE_KEY) {
+        dispatch(setSession(getStoredSession()));
+      }
+    }
 
+    window.addEventListener("storage", handleStorageChange);
     return () => {
-      subscription.unsubscribe();
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, [dispatch]);
 }
