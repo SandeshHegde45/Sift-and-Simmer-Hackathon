@@ -11,9 +11,21 @@ React + Redux Toolkit + React Router + Tailwind CSS + Supabase.
   from the main thunk-based data flow — queries Supabase directly via a
   custom `queryFn`
 - **React Router** — client-side routing
-- **Supabase** — recipe database and queries
-- **React Hook Form** — the Contact page's feedback form
+- **Supabase** — recipe database, queries, and email/password authentication
+- **React Hook Form** — the Contact, Login, and Register forms
 - **Tailwind CSS v4** — styling
+
+## Authentication
+
+The whole app requires a signed-in Supabase user (email + password) —
+`RequireAuth.jsx` redirects to `/login` if no session is found. `/login` and
+`/register` are the only public routes. Session state is bootstrapped and
+kept in sync via `src/utils/useAuthListener.js`, which checks for an existing
+session on load and subscribes to `supabase.auth.onAuthStateChange`.
+
+Note: favorites and contact messages are still stored per-browser in
+`localStorage`, not tied to the signed-in account — that would need its own
+Supabase table with row-level security if you want per-user data.
 
 ## Data
 

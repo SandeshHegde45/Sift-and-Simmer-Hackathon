@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink } from "react-router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { signOut } from "../store/authSlice";
 
 const navLinks = [
   { to: "/", label: "Home", end: true },
@@ -11,13 +12,19 @@ const navLinks = [
 ];
 
 function Navbar() {
+  const dispatch = useDispatch();
   const favoriteCount = useSelector((state) => state.favorites.items.length);
+  const userEmail = useSelector((state) => state.auth.user?.email);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const linkClass = ({ isActive }) =>
-    `relative px-1 py-1 font-body text-sm font-medium tracking-wide transition-colors ${
-      isActive ? "text-forest" : "text-ink-soft hover:text-forest"
+    `relative px-1 py-1 font-body text-sm font-medium tracking-wide transition-colors ${isActive ? "text-forest" : "text-ink-soft hover:text-forest"
     }`;
+
+  function handleSignOut() {
+    setMenuOpen(false);
+    dispatch(signOut());
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-cream/90 backdrop-blur">
@@ -46,6 +53,20 @@ function Navbar() {
           ))}
         </nav>
 
+        <div className="hidden items-center gap-4 md:flex">
+          {userEmail && (
+            <span className="max-w-40 truncate font-mono text-xs text-ink-soft" title={userEmail}>
+              {userEmail}
+            </span>
+          )}
+          <button
+            onClick={handleSignOut}
+            className="rounded-full border border-line px-4 py-1.5 font-body text-xs font-semibold text-ink-soft transition-colors hover:border-forest hover:text-forest"
+          >
+            Sign out
+          </button>
+        </div>
+
         <button
           onClick={() => setMenuOpen((prev) => !prev)}
           aria-label="Toggle menu"
@@ -64,8 +85,7 @@ function Navbar() {
               end={link.end}
               onClick={() => setMenuOpen(false)}
               className={({ isActive }) =>
-                `flex items-center justify-between rounded-xl px-3 py-2.5 font-body text-sm font-medium ${
-                  isActive ? "bg-forest/10 text-forest" : "text-ink-soft"
+                `flex items-center justify-between rounded-xl px-3 py-2.5 font-body text-sm font-medium ${isActive ? "bg-forest/10 text-forest" : "text-ink-soft"
                 }`
               }
             >
@@ -77,6 +97,17 @@ function Navbar() {
               )}
             </NavLink>
           ))}
+          <div className="mt-2 flex items-center justify-between border-t border-line px-3 pt-3">
+            {userEmail && (
+              <span className="truncate font-mono text-xs text-ink-soft">{userEmail}</span>
+            )}
+            <button
+              onClick={handleSignOut}
+              className="rounded-full border border-line px-4 py-1.5 font-body text-xs font-semibold text-ink-soft"
+            >
+              Sign out
+            </button>
+          </div>
         </nav>
       )}
     </header>

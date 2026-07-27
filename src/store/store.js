@@ -3,6 +3,7 @@ import recipesReducer from "./recipesSlice";
 import filtersReducer from "./filtersSlice";
 import favoritesReducer from "./favoritesSlice";
 import messagesReducer from "./messagesSlice";
+import authReducer from "./authSlice";
 import { randomMealApi } from "./randomMealApi";
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     filters: filtersReducer,
     favorites: favoritesReducer,
     messages: messagesReducer,
+    auth: authReducer,
     [randomMealApi.reducerPath]: randomMealApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -19,6 +21,12 @@ export const store = configureStore({
 
 store.subscribe(() => {
   const state = store.getState();
-  localStorage.setItem("siftSimmerFavorites", JSON.stringify(state.favorites.items));
-  localStorage.setItem("siftSimmerMessages", JSON.stringify(state.messages.items));
+  localStorage.setItem(
+    "siftSimmerFavorites",
+    JSON.stringify(state.favorites.items),
+  );
+  localStorage.setItem(
+    "siftSimmerMessages",
+    JSON.stringify(state.messages.items),
+  );
 });
