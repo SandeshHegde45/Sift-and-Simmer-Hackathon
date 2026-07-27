@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
@@ -10,7 +10,8 @@ function Register() {
   usePageMeta("Create Account", "Create an account for Sift & Simmer.");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { status, isSubmitting, error } = useSelector((state) => state.auth);
+  const { status, isSubmitting } = useSelector((state) => state.auth);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const {
     register,
@@ -19,7 +20,6 @@ function Register() {
     formState: { errors },
   } = useForm({ defaultValues: { email: "", password: "", confirmPassword: "" } });
 
-  // If someone who's already signed in lands on /register, send them home.
   useEffect(() => {
     if (status === "authenticated") {
       navigate("/", { replace: true });
@@ -27,13 +27,14 @@ function Register() {
   }, [status, navigate]);
 
   function onSubmit(data) {
+    setErrorMessage(null);
     dispatch(signUp({ email: data.email.trim(), password: data.password }))
       .unwrap()
       .then(() => {
         navigate("/login", { state: { justRegistered: true }, replace: true });
       })
-      .catch(() => {
-        // Error message is already surfaced from state.auth.error below.
+      .catch((message) => {
+        setErrorMessage(message);
       });
   }
 
@@ -109,7 +110,7 @@ function Register() {
             )}
           </div>
 
-          {error && <p className="font-mono text-xs text-wine">{error}</p>}
+          {errorMessage && <p className="font-mono text-xs text-wine">{errorMessage}</p>}
 
           <button
             type="submit"

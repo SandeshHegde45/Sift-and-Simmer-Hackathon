@@ -11,8 +11,9 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { status, isSubmitting, error } = useSelector((state) => state.auth);
+  const { status, isSubmitting } = useSelector((state) => state.auth);
   const [justRegistered] = useState(Boolean(location.state?.justRegistered));
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const {
     register,
@@ -34,7 +35,12 @@ function Login() {
   }, []);
 
   function onSubmit(data) {
-    dispatch(signIn({ email: data.email.trim(), password: data.password }));
+    setErrorMessage(null);
+    dispatch(signIn({ email: data.email.trim(), password: data.password }))
+      .unwrap()
+      .catch((message) => {
+        setErrorMessage(message);
+      });
   }
 
   return (
@@ -94,7 +100,7 @@ function Login() {
             )}
           </div>
 
-          {error && <p className="font-mono text-xs text-wine">{error}</p>}
+          {errorMessage && <p className="font-mono text-xs text-wine">{errorMessage}</p>}
 
           <button
             type="submit"

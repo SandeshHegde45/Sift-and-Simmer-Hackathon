@@ -22,7 +22,7 @@ export const store = configureStore({
 store.subscribe(() => {
   const state = store.getState();
   localStorage.setItem(
-    "siftSimmerFavorites",
+    state.favorites.storageKey,
     JSON.stringify(state.favorites.items),
   );
   localStorage.setItem(
